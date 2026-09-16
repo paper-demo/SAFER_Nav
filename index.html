@@ -103,6 +103,51 @@
       font-size: 1.05rem; color: #374151; line-height: 1.85;
     }
 
+    /* ── Overview Video ── */
+    .video-wrap {
+      margin-top: 1rem;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #000;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+    .video-wrap video {
+      width: 100%;
+      display: block;
+    }
+    .video-caption {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--c-muted);
+      margin-top: 0.6rem;
+    }
+
+    /* ── Figures ── */
+    .figure-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    .full-figure {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .full-figure img {
+      width: 100%;
+      display: block;
+      object-fit: contain;
+      background: #fff;
+    }
+    .full-figure figcaption {
+      padding: 0.7rem 1rem;
+      font-size: 0.88rem;
+      color: var(--c-muted);
+      text-align: center;
+    }
+
     /* ── Scenario Tabs ── */
     .scenario-group { margin-bottom: 2.5rem; }
     .scenario-label {
@@ -244,8 +289,36 @@
   <section class="narrow">
     <h2>Abstract</h2>
     <p class="abstract-text">
-      Vision-based navigation models, particularly foundation models, generate viable trajectories from RGB observations alone. However, even state-of-the-art transformer- and diffusion-based policies struggle to generalize in unfamiliar deployment environments containing unseen obstacles or shifted conditions. The resulting trajectories often remain goal-directed but unsafe. Existing efforts improve safety through external trajectory correction or internal geometric priors, yet the resulting policies are not trained to explicitly represent obstacle boundaries or traversable free-space structure. To address this, we propose a navigation model that incorporates these structures directly into the policy via fine-tuning and is designed for transformer-based RGB navigation policies. Across multiple robot platforms, indoor environments, and static and dynamic obstacle scenarios, our method reduces collision frequency relative to ViNT, NoMaD, and their CARE-augmented variants while maintaining goal-reaching performance.
+      Vision-based navigation models, particularly foundation models, generate viable trajectories from RGB observations alone. However, even state-of-the-art transformer- and diffusion-based policies struggle to generalize in unfamiliar deployment environments containing unseen obstacles or shifted conditions. The resulting trajectories often remain goal-directed but unsafe. Existing efforts improve safety through external trajectory correction or internal geometric priors, yet the resulting policies are not trained to explicitly represent obstacle boundaries or traversable free-space structure. To address this, we propose a navigation model that incorporates these structures directly into the policy via fine-tuning and is designed for transformer-based RGB navigation policies. Across three robot platforms, two indoor environments, and static and dynamic obstacle scenarios, our method reduces collisions per run from 1.76 to 0.20 and raises the goal arrival rate from 42% to 93% relative to ViNT, with consistent gains over NoMaD and their CARE-augmented variants.
     </p>
+  </section>
+
+  <!-- ====== OVERVIEW VIDEO ====== -->
+  <section class="narrow">
+    <h2>Overview Video</h2>
+    <div class="video-wrap">
+      <video controls preload="metadata">
+        <source src="videos/SAFER_Nav_overview.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    </div>
+    <p class="video-caption">Overview of the proposed method and experimental results.</p>
+  </section>
+
+  <!-- ====== ARCHITECTURE FIGURES ====== -->
+  <section>
+    <h2>Method Overview</h2>
+    <div class="figure-container">
+      <!-- TODO: assets/ 폴더에 PNG 변환한 그림 넣고 경로 수정 -->
+      <figure class="full-figure">
+        <img src="assets/SAFER-Nav_pipeline.png" alt="SAFER-Nav Pipeline" />
+        <figcaption>Figure 1 — Overview of SAFER-Nav. A trainable segmentation branch augments a pretrained RGB-goal backbone to refine the latent representation and support safety-aware waypoint prediction. The snowflake icon indicates parameters that remain frozen during fine-tuning.</figcaption>
+      </figure>
+      <figure class="full-figure">
+        <img src="assets/SAFER-Nav_fusion.png" alt="SAFER-Nav Fusion" />
+        <figcaption>Figure 2 — Seg-guided fusion detail. Segmentation features refine the RGB latent representation and support an auxiliary segmentation-only action branch for safety-aware waypoint prediction.</figcaption>
+      </figure>
+    </div>
   </section>
 
   <!-- ====== VIDEO COMPARISONS ====== -->
