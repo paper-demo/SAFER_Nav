@@ -6,829 +6,598 @@
   <title>SAFER-Nav: Enhancing Safety for Visual Robot Navigation via Segmentation-Aware Fine-Tuning</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans:400,500,600,700|Castoro" rel="stylesheet" />
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      --c-bg: #fdfdfc;
-      --c-surface: #ffffff;
-      --c-text: #1a1a1a;
-      --c-muted: #6b7280;
-      --c-accent: #2563eb;
-      --c-accent-soft: #dbeafe;
-      --c-border: #e5e7eb;
-      --c-tag-bg: #f0f4ff;
-      --c-ours: #dcfce7;
-      --c-ours-border: #86efac;
-      --font-serif: 'Castoro', 'Georgia', serif;
-      --font-sans: 'Noto Sans', 'Helvetica Neue', sans-serif;
-      --font-title: 'Google Sans', 'Helvetica Neue', sans-serif;
-      --max-w: 1100px;
-      --max-w-narrow: 860px;
-      --gap: 2.5rem;
+      --c-bg: #ffffff;
+      --c-text: #1a1a2e;
+      --c-muted: #555e68;
+      --c-light: #8892a0;
+      --c-accent: #3b82f6;
+      --c-accent-dark: #1e40af;
+      --c-border: #e2e8f0;
+      --c-surface: #f8fafc;
+      --c-ours: #ecfdf5;
+      --c-ours-border: #6ee7b7;
+      --c-ours-text: #065f46;
+      --font-title: 'Google Sans', 'Noto Sans', sans-serif;
+      --font-body: 'Noto Sans', 'Helvetica Neue', sans-serif;
+      --max-w: 980px;
+      --max-w-wide: 1120px;
     }
 
+    html { scroll-behavior: smooth; }
+
     body {
-      font-family: var(--font-sans);
+      font-family: var(--font-body);
       background: var(--c-bg);
       color: var(--c-text);
-      line-height: 1.7;
+      line-height: 1.75;
       font-size: 16px;
       -webkit-font-smoothing: antialiased;
     }
 
+    /* ── Hero ── */
     .hero {
       text-align: center;
-      padding: 5rem 1.5rem 3rem;
-      max-width: var(--max-w-narrow);
+      padding: 4.5rem 1.5rem 2.5rem;
+      max-width: var(--max-w);
       margin: 0 auto;
     }
-    .hero .badge {
+    .hero .venue-tag {
       display: inline-block;
-      font-size: 0.75rem;
+      font-family: var(--font-title);
+      font-size: 0.85rem;
       font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--c-accent);
-      background: var(--c-tag-bg);
-      padding: 0.35em 1em;
+      color: var(--c-accent-dark);
+      background: #eff6ff;
+      padding: 0.4em 1.2em;
       border-radius: 999px;
       margin-bottom: 1.5rem;
     }
     .hero h1 {
       font-family: var(--font-title);
-      font-size: clamp(1.75rem, 4vw, 2.6rem);
+      font-size: clamp(1.8rem, 4.5vw, 2.8rem);
       font-weight: 700;
-      line-height: 1.25;
+      line-height: 1.2;
       margin-bottom: 1.2rem;
-      letter-spacing: -0.01em;
+      color: var(--c-text);
     }
-    .hero .authors { color: var(--c-muted); font-size: 1.05rem; margin-bottom: 0.6rem; }
-    .hero .venue { color: var(--c-muted); font-size: 0.9rem; }
-    .hero .links {
-      margin-top: 1.8rem;
-      display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;
+    .hero .authors {
+      font-size: 1.1rem;
+      color: var(--c-muted);
+      margin-bottom: 0.3rem;
     }
-    .hero .links a {
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      padding: 0.55em 1.3em; border-radius: 8px; font-size: 0.9rem;
-      font-weight: 500; text-decoration: none; transition: all 0.2s;
+    .hero .venue {
+      font-size: 0.95rem;
+      color: var(--c-light);
+      margin-bottom: 2rem;
     }
-    .btn-primary { background: var(--c-accent); color: #fff; }
-    .btn-primary:hover { background: #1d4ed8; }
-    .btn-outline { border: 1.5px solid var(--c-border); color: var(--c-text); background: var(--c-surface); }
-    .btn-outline:hover { border-color: var(--c-accent); color: var(--c-accent); }
+    .hero .btn-row {
+      display: flex;
+      gap: 0.6rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.5em 1.2em;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      font-family: var(--font-title);
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .btn-dark { background: #1e293b; color: #fff; }
+    .btn-dark:hover { background: #0f172a; }
+    .btn-light { background: var(--c-surface); color: var(--c-text); border: 1.5px solid var(--c-border); }
+    .btn-light:hover { border-color: var(--c-accent); color: var(--c-accent); }
 
-    section {
+    /* ── Sections ── */
+    .section {
       max-width: var(--max-w);
-      margin: 0 auto var(--gap);
+      margin: 0 auto 3rem;
       padding: 0 1.5rem;
     }
-    section.narrow { max-width: var(--max-w-narrow); }
-    section h2 {
+    .section.wide { max-width: var(--max-w-wide); }
+
+    .section-title {
       font-family: var(--font-title);
-      font-size: 1.55rem; font-weight: 600;
-      margin-bottom: 1rem; padding-bottom: 0.5rem;
-      border-bottom: 2px solid var(--c-accent-soft);
-    }
-    section h3 {
-      font-family: var(--font-title);
-      font-size: 1.2rem; font-weight: 600;
-      margin: 2rem 0 0.6rem; color: #374151;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--c-text);
     }
 
-    .abstract-text {
-      font-family: var(--font-sans);
-      font-size: 1.05rem; color: #374151; line-height: 1.85;
+    .section-subtitle {
+      font-family: var(--font-title);
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin: 2rem 0 0.6rem;
+      color: #374151;
+    }
+
+    .section-text {
+      font-size: 1rem;
+      color: var(--c-muted);
+      line-height: 1.8;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      max-width: var(--max-w);
+      margin: 0 auto 3rem;
+      padding: 0 1.5rem;
+    }
+    .divider hr {
+      border: none;
+      border-top: 1px solid var(--c-border);
     }
 
     /* ── Overview Video ── */
-    .video-wrap {
-      margin-top: 1rem;
-      border-radius: 12px;
-      overflow: hidden;
-      background: #000;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    .video-hero {
+      max-width: var(--max-w);
+      margin: 0 auto 2.5rem;
+      padding: 0 1.5rem;
     }
-    .video-wrap video {
+    .video-hero video {
       width: 100%;
+      border-radius: 14px;
       display: block;
-    }
-    .video-caption {
-      text-align: center;
-      font-size: 0.85rem;
-      color: var(--c-muted);
-      margin-top: 0.6rem;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
     }
 
     /* ── Figures ── */
-    .figure-container {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-      margin-top: 1rem;
-    }
-    .full-figure {
-      background: var(--c-surface);
-      border: 1px solid var(--c-border);
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    .full-figure img {
-      width: 100%;
-      display: block;
-      object-fit: contain;
-      background: #fff;
-    }
-    .full-figure figcaption {
-      padding: 0.7rem 1rem;
-      font-size: 0.88rem;
-      color: var(--c-muted);
+    .fig-wrap {
+      margin: 1.5rem 0;
       text-align: center;
     }
-
-    /* ── Scenario Tabs ── */
-    .scenario-group { margin-bottom: 2.5rem; }
-    .scenario-label {
-      display: inline-block; font-size: 0.7rem; font-weight: 600;
-      letter-spacing: 0.06em; text-transform: uppercase;
-      color: var(--c-accent); background: var(--c-tag-bg);
-      padding: 0.3em 0.8em; border-radius: 6px; margin-bottom: 0.8rem;
+    .fig-wrap img {
+      max-width: 100%;
+      border-radius: 10px;
+      display: inline-block;
     }
-    .scenario-desc {
-      font-size: 0.9rem; color: var(--c-muted); margin-bottom: 0.8rem;
+    .fig-cap {
+      margin-top: 0.6rem;
+      font-size: 0.88rem;
+      color: var(--c-light);
+      line-height: 1.6;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
-    /* ── Video Grid ── */
-    .video-grid {
+    /* ── Video Comparison Grid ── */
+    .scenario-block { margin-bottom: 2.5rem; }
+    .scenario-tag {
+      display: inline-block;
+      font-family: var(--font-title);
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--c-accent);
+      background: #eff6ff;
+      padding: 0.25em 0.7em;
+      border-radius: 5px;
+      margin-bottom: 0.5rem;
+    }
+    .scenario-note {
+      font-size: 0.88rem;
+      color: var(--c-light);
+      margin-bottom: 0.8rem;
+    }
+    .vid-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 0.7rem;
-      margin-top: 0.5rem;
+      gap: 0.6rem;
     }
-    .video-card {
-      background: var(--c-surface);
+    .vid-card {
+      border-radius: 10px;
+      overflow: hidden;
       border: 1.5px solid var(--c-border);
-      border-radius: 10px; overflow: hidden;
-      transition: box-shadow 0.2s;
+      background: #fff;
+      transition: box-shadow 0.2s, transform 0.2s;
     }
-    .video-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.07); }
-    .video-card.ours {
-      border-color: var(--c-ours-border);
-      background: var(--c-ours);
+    .vid-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.07); transform: translateY(-2px); }
+    .vid-card.ours { border-color: var(--c-ours-border); background: var(--c-ours); }
+    .vid-card video { width: 100%; display: block; object-fit: contain; background: #0a0a0a; }
+    .vid-card .vid-label {
+      padding: 0.45rem 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-align: center;
+      font-family: var(--font-title);
     }
-    .video-card video {
-      width: 100%; display: block;
-      object-fit: contain; background: #111;
-    }
-    .video-card .label {
-      padding: 0.5rem 0.6rem; font-size: 0.78rem;
-      font-weight: 500; text-align: center;
-    }
-    .video-card.ours .label { font-weight: 700; color: #166534; }
+    .vid-card.ours .vid-label { font-weight: 700; color: var(--c-ours-text); }
 
-    /* ── Results Gallery ── */
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1rem; margin-top: 1rem;
+    /* ── Tables ── */
+    .table-note {
+      font-size: 0.88rem;
+      color: var(--c-light);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      font-style: italic;
     }
-    .gallery figure {
-      background: var(--c-surface); border: 1px solid var(--c-border);
-      border-radius: 10px; overflow: hidden; transition: box-shadow 0.2s;
+    .table-scroll {
+      overflow-x: auto;
+      border-radius: 10px;
+      border: 1px solid var(--c-border);
     }
-    .gallery figure:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.07); }
-    .gallery img {
-      width: 100%; display: block; aspect-ratio: 4/3;
-      object-fit: cover; background: #f3f4f6;
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    thead { background: var(--c-surface); }
+    th, td { padding: 0.6rem 0.7rem; text-align: center; border-bottom: 1px solid var(--c-border); }
+    th {
+      font-family: var(--font-title);
+      font-weight: 600; font-size: 0.78rem;
+      text-transform: uppercase; letter-spacing: 0.03em; color: var(--c-light);
     }
-    .gallery figcaption { padding: 0.7rem 0.9rem; font-size: 0.85rem; color: var(--c-muted); }
-
-    /* ── Table ── */
-    .table-wrap {
-      overflow-x: auto; margin-top: 1rem;
-      border-radius: 10px; border: 1px solid var(--c-border);
-    }
-    table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
-    thead { background: #f8fafc; }
-    th, td { padding: 0.75rem 1rem; text-align: center; border-bottom: 1px solid var(--c-border); }
-    th { font-weight: 600; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--c-muted); }
     td:first-child, th:first-child { text-align: left; font-weight: 500; }
-    tbody tr:hover { background: #f0f4ff; }
-    .highlight-row { background: var(--c-ours); font-weight: 600; }
-    .best { color: var(--c-accent); font-weight: 700; }
-
-    .table-caption {
-      font-size: 0.9rem; color: var(--c-muted); line-height: 1.6;
-      margin-bottom: 0.8rem; font-style: italic;
-    }
-    .env-header {
-      border-bottom: 2px solid var(--c-accent-soft);
-      font-size: 0.85rem; text-transform: none; letter-spacing: 0;
-    }
-    .robot-header td {
-      font-weight: 700; font-size: 0.9rem;
-      background: #f1f5f9; border-bottom: 1px solid var(--c-border);
-      padding: 0.6rem 1rem; text-align: left;
-    }
-    .data-table td, .data-table th {
-      padding: 0.55rem 0.65rem; font-size: 0.82rem; white-space: nowrap;
-    }
+    tbody tr:hover { background: #f0f9ff; }
+    .row-ours { background: var(--c-ours); font-weight: 600; }
+    .row-robot td { font-weight: 700; font-size: 0.85rem; background: var(--c-surface); border-bottom: 1px solid var(--c-border); text-align: left; }
+    .best { color: var(--c-accent-dark); font-weight: 700; }
+    .env-head { border-bottom: 2px solid #dbeafe; text-transform: none; letter-spacing: 0; font-size: 0.82rem; }
+    .tbl-sm td, .tbl-sm th { padding: 0.5rem 0.6rem; font-size: 0.82rem; white-space: nowrap; }
 
     /* ── Scatter Plot ── */
-    .scatter-container {
-      margin-top: 1rem;
-      overflow-x: auto;
-      text-align: center;
-    }
-    .scatter-container canvas {
-      max-width: 100%;
-    }
+    .scatter-wrap { text-align: center; margin-top: 1rem; overflow-x: auto; }
+    .scatter-wrap canvas { max-width: 100%; }
     .scatter-legend {
       display: flex; justify-content: center; gap: 1.2rem;
       flex-wrap: wrap; margin-top: 0.8rem;
     }
-    .legend-item {
-      display: inline-flex; align-items: center; gap: 0.35rem;
-      font-size: 0.82rem; color: var(--c-text);
-    }
-    .legend-dot {
-      width: 10px; height: 10px; border-radius: 50%;
-      display: inline-block;
+    .legend-item { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.82rem; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+    /* ── BibTeX ── */
+    .bib-box {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: 10px;
+      padding: 1rem 1.2rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.78rem;
+      line-height: 1.6;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      color: var(--c-muted);
     }
 
-    footer { text-align: center; padding: 3rem 1rem 2rem; font-size: 0.8rem; color: var(--c-muted); }
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 3rem 1rem 2rem;
+      font-size: 0.8rem;
+      color: var(--c-light);
+    }
 
+    /* ── Responsive ── */
     @media (max-width: 900px) {
-      .video-grid { grid-template-columns: repeat(3, 1fr); }
+      .vid-grid { grid-template-columns: repeat(3, 1fr); }
     }
     @media (max-width: 600px) {
       .hero { padding: 3rem 1rem 2rem; }
-      section { padding: 0 1rem; }
-      .video-grid { grid-template-columns: 1fr 1fr; }
+      .section { padding: 0 1rem; }
+      .vid-grid { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ====== HERO ====== -->
-  <header class="hero">
-    <span class="badge">IEEE International Conference on Robotics and Automation, ICRA 2027</span>
-    <h1>SAFER-Nav: Enhancing Safety for Visual Robot Navigation via Segmentation-Aware Fine-Tuning</h1>
-    <p class="authors">Anonymous Authors</p>
-    <p class="venue">Under review</p>
-    <div class="links">
-      <a href="#" class="btn-primary">📄 Paper (PDF)</a>
-      <a href="#" onclick="alert('Coming soon!'); return false;" class="btn-outline">💻 Code (Coming Soon)</a>
-      <a href="#videos" class="btn-outline">🎬 Videos</a>
+<!-- ═══════════ HERO ═══════════ -->
+<header class="hero">
+  <div class="venue-tag">ICRA 2027 · Under Review</div>
+  <h1>SAFER-Nav: Enhancing Safety for Visual Robot<br>Navigation via Segmentation-Aware Fine-Tuning</h1>
+  <p class="authors">Anonymous Authors</p>
+  <p class="venue">Anonymous Institution</p>
+  <div class="btn-row">
+    <a href="#" class="btn btn-dark">📄 Paper</a>
+    <a href="#" onclick="alert('Coming soon!'); return false;" class="btn btn-light">💻 Code</a>
+    <a href="#overview-video" class="btn btn-light">🎬 Video</a>
+    <a href="#results" class="btn btn-light">📊 Results</a>
+  </div>
+</header>
+
+<!-- ═══════════ OVERVIEW VIDEO ═══════════ -->
+<div class="video-hero" id="overview-video">
+  <video controls preload="metadata">
+    <source src="videos/SAFER_Nav_overview.mp4" type="video/mp4" />
+  </video>
+</div>
+
+<!-- ═══════════ ABSTRACT ═══════════ -->
+<div class="section">
+  <h2 class="section-title">Abstract</h2>
+  <p class="section-text">
+    Vision-based navigation models, particularly foundation models, generate viable trajectories from RGB observations alone. However, even state-of-the-art transformer- and diffusion-based policies struggle to generalize in unfamiliar deployment environments containing unseen obstacles or shifted conditions. The resulting trajectories often remain goal-directed but unsafe. Existing efforts improve safety through external trajectory correction or internal geometric priors, yet the resulting policies are not trained to explicitly represent obstacle boundaries or traversable free-space structure. To address this, we propose a navigation model that incorporates these structures directly into the policy via fine-tuning and is designed for transformer-based RGB navigation policies. Across three robot platforms, two indoor environments, and static and dynamic obstacle scenarios, our method reduces collisions per run from 1.76 to 0.20 and raises the goal arrival rate from 42% to 93% relative to ViNT, with consistent gains over NoMaD and their CARE-augmented variants.
+  </p>
+</div>
+
+<div class="divider"><hr></div>
+
+<!-- ═══════════ METHOD ═══════════ -->
+<div class="section wide">
+  <h2 class="section-title">Method Overview</h2>
+  <p class="section-text">
+    SAFER-Nav incorporates segmentation-aware safety information into a pretrained RGB-based navigation policy. It comprises an RGB-goal encoder, a segmentation encoder, a representation-level fusion module, and dual action prediction pathways. The RGB-goal branch follows a pretrained navigation backbone, while a trainable segmentation branch converts aligned binary traversability masks into spatiotemporal tokens and injects them into the latent representation through attention-based fusion.
+  </p>
+  <div class="fig-wrap">
+    <img src="assets/SAFER-Nav_pipeline.png" alt="SAFER-Nav Pipeline Architecture" />
+    <p class="fig-cap"><strong>Figure 1.</strong> Overview of SAFER-Nav. A trainable segmentation branch augments a pretrained RGB-goal backbone to refine the latent representation and support safety-aware waypoint prediction. The snowflake icon indicates parameters that remain frozen during fine-tuning.</p>
+  </div>
+</div>
+
+<div class="section">
+  <h3 class="section-subtitle">Seg-guided Fusion &amp; Dynamic Blending</h3>
+  <p class="section-text">
+    Segmentation features refine the RGB latent representation through cross-attention and support an auxiliary segmentation-only action branch. At inference, the main and auxiliary predictions are dynamically blended based on the current obstacle layout, enabling the policy to produce collision-aware actions when obstacles are present while preserving efficient goal-directed behavior in clear space.
+  </p>
+  <div class="fig-wrap">
+    <img src="assets/SAFER-Nav_fusion.png" alt="Seg-guided Fusion Detail" />
+    <p class="fig-cap"><strong>Figure 2.</strong> Seg-guided fusion detail. Segmentation features refine the RGB latent representation and support an auxiliary segmentation-only action branch for safety-aware waypoint prediction.</p>
+  </div>
+</div>
+
+<div class="divider"><hr></div>
+
+<!-- ═══════════ EXPERIMENTAL SETUP ═══════════ -->
+<div class="section wide">
+  <h2 class="section-title">Experimental Setup</h2>
+  <p class="section-text">
+    We deploy SAFER-Nav on three mobile robot configurations with different visual characteristics: a DJI RoboMaster S1 (120° FOV), a TurtleBot4 with Intel RealSense D435 (69.4° FOV), and a LoCoBot with a 170° fisheye camera. We evaluate in two unseen indoor environments (TE and CY) with static obstacles and a dynamic obstacle scenario where a teleoperated robot crosses the path.
+  </p>
+  <div class="fig-wrap">
+    <img src="assets/SAFER_Nav_figure3.png" alt="Experimental Environments" />
+    <p class="fig-cap"><strong>Figure 3.</strong> Overview of environments. Left and middle: static-obstacle setups in TE and CY, with maps and representative visual observations. Right: dynamic-obstacle setting, where the robot must continuously avoid the moving robot.</p>
+  </div>
+</div>
+
+<div class="divider"><hr></div>
+
+<!-- ═══════════ VIDEO COMPARISONS ═══════════ -->
+<div class="section wide" id="videos">
+  <h2 class="section-title">Video Comparisons</h2>
+
+  <!-- Static: LoCoBot -->
+  <div class="scenario-block">
+    <h3 class="section-subtitle">Static Obstacle Environment — LoCoBot</h3>
+    <span class="scenario-tag">Static Obstacle Environment</span>
+    <p class="scenario-note">Static obstacles evaluated on the LoCoBot platform.</p>
+    <div class="vid-grid">
+      <div class="vid-card ours"><video controls preload="metadata" muted><source src="videos/static_obs_TE_locobot_safernav.MOV" type="video/mp4" /></video><div class="vid-label">SAFER-Nav (Ours)</div></div>
+      <div class="vid-card"><video controls preload="metadata" muted><source src="videos/static_obs_TE_locobot_vint.MOV" type="video/mp4" /></video><div class="vid-label">ViNT</div></div>
+      <div class="vid-card"><video controls preload="metadata" muted><source src="videos/static_obs_TE_locobot_nomad.MOV" type="video/mp4" /></video><div class="vid-label">NoMaD</div></div>
+      <div class="vid-card"><video controls preload="metadata" muted><source src="videos/static_obs_TE_locobot_vint_care.MOV" type="video/mp4" /></video><div class="vid-label">ViNT + CARE</div></div>
+      <div class="vid-card"><video controls preload="metadata" muted><source src="videos/static_obs_TE_locobot_nomad_care.MOV" type="video/mp4" /></video><div class="vid-label">NoMaD + CARE</div></div>
     </div>
-  </header>
+  </div>
 
-  <!-- ====== ABSTRACT ====== -->
-  <section class="narrow">
-    <h2>Abstract</h2>
-    <p class="abstract-text">
-      Vision-based navigation models, particularly foundation models, generate viable trajectories from RGB observations alone. However, even state-of-the-art transformer- and diffusion-based policies struggle to generalize in unfamiliar deployment environments containing unseen obstacles or shifted conditions. The resulting trajectories often remain goal-directed but unsafe. Existing efforts improve safety through external trajectory correction or internal geometric priors, yet the resulting policies are not trained to explicitly represent obstacle boundaries or traversable free-space structure. To address this, we propose a navigation model that incorporates these structures directly into the policy via fine-tuning and is designed for transformer-based RGB navigation policies. Across three robot platforms, two indoor environments, and static and dynamic obstacle scenarios, our method reduces collisions per run from 1.76 to 0.20 and raises the goal arrival rate from 42% to 93% relative to ViNT, with consistent gains over NoMaD and their CARE-augmented variants.
-    </p>
-  </section>
-
-  <!-- ====== OVERVIEW VIDEO ====== -->
-  <section class="narrow">
-    <h2>Overview Video</h2>
-    <div class="video-wrap">
-      <video controls preload="metadata">
-        <source src="videos/SAFER_Nav_overview.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
+  <!-- Static: RoboMaster -->
+  <div class="scenario-block">
+    <h3 class="section-subtitle">Static Obstacle Environment — RoboMaster</h3>
+    <span class="scenario-tag">Static Obstacle Environment</span>
+    <p class="scenario-note">Static obstacles evaluated on the RoboMaster platform.</p>
+    <div class="vid-grid">
+      <div class="vid-card ours"><video controls preload="metadata" muted><source src="videos/static_obs_TE_robomaster_safernav.MOV" type="video/mp4" /></video><div class="vid-label">SAFER-Nav (Ours)</div></div>
+      <div class="vid-card"><video controls preload="metadata" muted><source src="videos/static_obs_TE_robomaster_vint.MOV" type="video/mp4" /></video><div class="vid-label">ViNT</div></div>
+      <div class="vid-card"><video controls preload="metadata" muted><source src="videos/static_obs_TE_robomaster_nomad.MOV" type="video/mp4" /></video><div class="vid-label">NoMaD</div></div>
+      <div class="vid-card"><video controls preload="metadata" muted><source src="videos/static_obs_TE_robomaster_vint_care.MOV" type="video/mp4" /></video><div class="vid-label">ViNT + CARE</div></div>
+      <div class="vid-card"><video controls preload="metadata" muted><source src="videos/static_obs_TE_robomaster_nomad_care.MOV" type="video/mp4" /></video><div class="vid-label">NoMaD + CARE</div></div>
     </div>
-    <p class="video-caption">Overview of the proposed method and experimental results.</p>
-  </section>
+  </div>
 
-  <!-- ====== ARCHITECTURE FIGURES ====== -->
-  <section>
-    <h2>Method Overview</h2>
-    <div class="figure-container">
-      <!-- TODO: assets/ 폴더에 PNG 변환한 그림 넣고 경로 수정 -->
-      <figure class="full-figure">
-        <img src="assets/SAFER-Nav_pipeline.png" alt="SAFER-Nav Pipeline" />
-        <figcaption>Figure 1 — Overview of SAFER-Nav. A trainable segmentation branch augments a pretrained RGB-goal backbone to refine the latent representation and support safety-aware waypoint prediction. The snowflake icon indicates parameters that remain frozen during fine-tuning.</figcaption>
-      </figure>
-      <figure class="full-figure">
-        <img src="assets/SAFER-Nav_fusion.png" alt="SAFER-Nav Fusion" />
-        <figcaption>Figure 2 — Seg-guided fusion detail. Segmentation features refine the RGB latent representation and support an auxiliary segmentation-only action branch for safety-aware waypoint prediction.</figcaption>
-      </figure>
+  <!-- Static: TurtleBot4 -->
+  <div class="scenario-block">
+    <h3 class="section-subtitle">Static Obstacle Environment — TurtleBot4</h3>
+    <span class="scenario-tag">Static Obstacle Environment</span>
+    <p class="scenario-note">Static obstacles evaluated on the TurtleBot4 platform.</p>
+    <div class="vid-grid">
+      <div class="vid-card ours"><video controls preload="metadata" muted><source src="videos/static_obs_TE_turtlebot_safernav.MOV" type="video/mp4" /></video><div class="vid-label">SAFER-Nav (Ours)</div></div>
+      <div class="vid-card"><video controls preload="metadata" muted><source src="videos/static_obs_TE_turtlebot_vint.MOV" type="video/mp4" /></video><div class="vid-label">ViNT</div></div>
+      <div class="vid-card"><video controls preload="metadata" muted><source src="videos/static_obs_TE_turtlebot_nomad.MOV" type="video/mp4" /></video><div class="vid-label">NoMaD</div></div>
+      <div class="vid-card"><video controls preload="metadata" muted><source src="videos/static_obs_TE_turtlebot_vint_care.MOV" type="video/mp4" /></video><div class="vid-label">ViNT + CARE</div></div>
+      <div class="vid-card"><video controls preload="metadata" muted><source src="videos/static_obs_TE_turtlebot_nomad_care.MOV" type="video/mp4" /></video><div class="vid-label">NoMaD + CARE</div></div>
     </div>
-  </section>
+  </div>
 
-  <!-- ====== VIDEO COMPARISONS ====== -->
-  <section id="videos">
-    <h2>Video Comparisons</h2>
-
-    <!-- ── Static Obstacle Environment: LoCoBot ── -->
-    <div class="scenario-group">
-      <h3>Static Obstacle Environment — LoCoBot</h3>
-      <span class="scenario-label">Static Obstacle Environment</span>
-      <p class="scenario-desc">Static obstacles evaluated on the LoCoBot platform.</p>
-      <div class="video-grid">
-        <div class="video-card ours">
-          <video controls preload="metadata" muted>
-            <source src="videos/static_obs_TE_locobot_safernav.MOV" type="video/mp4" />
-          </video>
-          <div class="label">SAFER-Nav (Ours)</div>
-        </div>
-        <div class="video-card">
-          <video controls preload="metadata" muted>
-            <source src="videos/static_obs_TE_locobot_vint.MOV" type="video/mp4" />
-          </video>
-          <div class="label">ViNT</div>
-        </div>
-        <div class="video-card">
-          <video controls preload="metadata" muted>
-            <source src="videos/static_obs_TE_locobot_nomad.MOV" type="video/mp4" />
-          </video>
-          <div class="label">NoMaD</div>
-        </div>
-        <div class="video-card">
-          <video controls preload="metadata" muted>
-            <source src="videos/static_obs_TE_locobot_vint_care.MOV" type="video/mp4" />
-          </video>
-          <div class="label">ViNT + CARE</div>
-        </div>
-        <div class="video-card">
-          <video controls preload="metadata" muted>
-            <source src="videos/static_obs_TE_locobot_nomad_care.MOV" type="video/mp4" />
-          </video>
-          <div class="label">NoMaD + CARE</div>
-        </div>
-      </div>
+  <!-- Dynamic: Corner-Appear -->
+  <div class="scenario-block">
+    <h3 class="section-subtitle">Dynamic Obstacle Environment — Corner-Appear</h3>
+    <span class="scenario-tag">Dynamic Obstacle Environment</span>
+    <p class="scenario-note">A dynamic obstacle appears from a corner along the robot's planned path.</p>
+    <div class="vid-grid">
+      <div class="vid-card ours"><video controls preload="metadata" muted><source src="videos/dynamic_obs_cross_safernav.MOV" type="video/mp4" /></video><div class="vid-label">SAFER-Nav (Ours)</div></div>
+      <div class="vid-card"><video controls preload="metadata" muted><source src="videos/dynamic_obs_cross_vint.MOV" type="video/mp4" /></video><div class="vid-label">ViNT</div></div>
+      <div class="vid-card"><video controls preload="metadata" muted><source src="videos/dynamic_obs_cross_nomad.MOV" type="video/mp4" /></video><div class="vid-label">NoMaD</div></div>
+      <div class="vid-card"><video controls preload="metadata" muted><source src="videos/dynamic_obs_cross_vint_care.MOV" type="video/mp4" /></video><div class="vid-label">ViNT + CARE</div></div>
+      <div class="vid-card"><video controls preload="metadata" muted><source src="videos/dynamic_obs_cross_nomad_care.MOV" type="video/mp4" /></video><div class="vid-label">NoMaD + CARE</div></div>
     </div>
+  </div>
 
-    <!-- ── Static Obstacle Environment: RoboMaster ── -->
-    <div class="scenario-group">
-      <h3>Static Obstacle Environment — RoboMaster</h3>
-      <span class="scenario-label">Static Obstacle Environment</span>
-      <p class="scenario-desc">Static obstacles evaluated on the RoboMaster platform.</p>
-      <div class="video-grid">
-        <div class="video-card ours">
-          <video controls preload="metadata" muted>
-            <source src="videos/static_obs_TE_robomaster_safernav.MOV" type="video/mp4" />
-          </video>
-          <div class="label">SAFER-Nav (Ours)</div>
-        </div>
-        <div class="video-card">
-          <video controls preload="metadata" muted>
-            <source src="videos/static_obs_TE_robomaster_vint.MOV" type="video/mp4" />
-          </video>
-          <div class="label">ViNT</div>
-        </div>
-        <div class="video-card">
-          <video controls preload="metadata" muted>
-            <source src="videos/static_obs_TE_robomaster_nomad.MOV" type="video/mp4" />
-          </video>
-          <div class="label">NoMaD</div>
-        </div>
-        <div class="video-card">
-          <video controls preload="metadata" muted>
-            <source src="videos/static_obs_TE_robomaster_vint_care.MOV" type="video/mp4" />
-          </video>
-          <div class="label">ViNT + CARE</div>
-        </div>
-        <div class="video-card">
-          <video controls preload="metadata" muted>
-            <source src="videos/static_obs_TE_robomaster_nomad_care.MOV" type="video/mp4" />
-          </video>
-          <div class="label">NoMaD + CARE</div>
-        </div>
-      </div>
+  <!-- Dynamic: Front-Approach -->
+  <div class="scenario-block">
+    <h3 class="section-subtitle">Dynamic Obstacle Environment — Front-Approach</h3>
+    <span class="scenario-tag">Dynamic Obstacle Environment</span>
+    <p class="scenario-note">A dynamic obstacle approaches head-on toward the robot.</p>
+    <div class="vid-grid">
+      <div class="vid-card ours"><video controls preload="metadata" muted><source src="videos/dynamic_obs_front_safernav.MOV" type="video/mp4" /></video><div class="vid-label">SAFER-Nav (Ours)</div></div>
+      <div class="vid-card"><video controls preload="metadata" muted><source src="videos/dynamic_obs_front_vint.MOV" type="video/mp4" /></video><div class="vid-label">ViNT</div></div>
+      <div class="vid-card"><video controls preload="metadata" muted><source src="videos/dynamic_obs_front_nomad.MOV" type="video/mp4" /></video><div class="vid-label">NoMaD</div></div>
+      <div class="vid-card"><video controls preload="metadata" muted><source src="videos/dynamic_obs_front_vint_care.MOV" type="video/mp4" /></video><div class="vid-label">ViNT + CARE</div></div>
+      <div class="vid-card"><video controls preload="metadata" muted><source src="videos/dynamic_obs_front_nomad_care.MOV" type="video/mp4" /></video><div class="vid-label">NoMaD + CARE</div></div>
     </div>
+  </div>
+</div>
 
-    <!-- ── Static Obstacle Environment: TurtleBot4 ── -->
-    <div class="scenario-group">
-      <h3>Static Obstacle Environment — TurtleBot4</h3>
-      <span class="scenario-label">Static Obstacle Environment</span>
-      <p class="scenario-desc">Static obstacles evaluated on the TurtleBot4 platform.</p>
-      <div class="video-grid">
-        <div class="video-card ours">
-          <video controls preload="metadata" muted>
-            <source src="videos/static_obs_TE_turtlebot_safernav.MOV" type="video/mp4" />
-          </video>
-          <div class="label">SAFER-Nav (Ours)</div>
-        </div>
-        <div class="video-card">
-          <video controls preload="metadata" muted>
-            <source src="videos/static_obs_TE_turtlebot_vint.MOV" type="video/mp4" />
-          </video>
-          <div class="label">ViNT</div>
-        </div>
-        <div class="video-card">
-          <video controls preload="metadata" muted>
-            <source src="videos/static_obs_TE_turtlebot_nomad.MOV" type="video/mp4" />
-          </video>
-          <div class="label">NoMaD</div>
-        </div>
-        <div class="video-card">
-          <video controls preload="metadata" muted>
-            <source src="videos/static_obs_TE_turtlebot_vint_care.MOV" type="video/mp4" />
-          </video>
-          <div class="label">ViNT + CARE</div>
-        </div>
-        <div class="video-card">
-          <video controls preload="metadata" muted>
-            <source src="videos/static_obs_TE_turtlebot_nomad_care.MOV" type="video/mp4" />
-          </video>
-          <div class="label">NoMaD + CARE</div>
-        </div>
-      </div>
-    </div>
+<div class="divider"><hr></div>
 
-    <!-- ── Dynamic Obstacle Environment: Corner-Appear ── -->
-    <div class="scenario-group">
-      <h3>Dynamic Obstacle Environment — Corner-Appear</h3>
-      <span class="scenario-label">Dynamic Obstacle Environment</span>
-      <p class="scenario-desc">A dynamic obstacle appears from a corner along the robot's planned path.</p>
-      <div class="video-grid">
-        <div class="video-card ours">
-          <video controls preload="metadata" muted>
-            <source src="videos/dynamic_obs_cross_safernav.MOV" type="video/mp4" />
-          </video>
-          <div class="label">SAFER-Nav (Ours)</div>
-        </div>
-        <div class="video-card">
-          <video controls preload="metadata" muted>
-            <source src="videos/dynamic_obs_cross_vint.MOV" type="video/mp4" />
-          </video>
-          <div class="label">ViNT</div>
-        </div>
-        <div class="video-card">
-          <video controls preload="metadata" muted>
-            <source src="videos/dynamic_obs_cross_nomad.MOV" type="video/mp4" />
-          </video>
-          <div class="label">NoMaD</div>
-        </div>
-        <div class="video-card">
-          <video controls preload="metadata" muted>
-            <source src="videos/dynamic_obs_cross_vint_care.MOV" type="video/mp4" />
-          </video>
-          <div class="label">ViNT + CARE</div>
-        </div>
-        <div class="video-card">
-          <video controls preload="metadata" muted>
-            <source src="videos/dynamic_obs_cross_nomad_care.MOV" type="video/mp4" />
-          </video>
-          <div class="label">NoMaD + CARE</div>
-        </div>
-      </div>
-    </div>
+<!-- ═══════════ QUANTITATIVE RESULTS ═══════════ -->
+<div class="section wide" id="results">
+  <h2 class="section-title">Quantitative Results</h2>
 
-    <!-- ── Dynamic Obstacle Environment: Front-Approach ── -->
-    <div class="scenario-group">
-      <h3>Dynamic Obstacle Environment — Front-Approach</h3>
-      <span class="scenario-label">Dynamic Obstacle Environment</span>
-      <p class="scenario-desc">A dynamic obstacle approaches head-on toward the robot.</p>
-      <div class="video-grid">
-        <div class="video-card ours">
-          <video controls preload="metadata" muted>
-            <source src="videos/dynamic_obs_front_safernav.MOV" type="video/mp4" />
-          </video>
-          <div class="label">SAFER-Nav (Ours)</div>
-        </div>
-        <div class="video-card">
-          <video controls preload="metadata" muted>
-            <source src="videos/dynamic_obs_front_vint.MOV" type="video/mp4" />
-          </video>
-          <div class="label">ViNT</div>
-        </div>
-        <div class="video-card">
-          <video controls preload="metadata" muted>
-            <source src="videos/dynamic_obs_front_nomad.MOV" type="video/mp4" />
-          </video>
-          <div class="label">NoMaD</div>
-        </div>
-        <div class="video-card">
-          <video controls preload="metadata" muted>
-            <source src="videos/dynamic_obs_front_vint_care.MOV" type="video/mp4" />
-          </video>
-          <div class="label">ViNT + CARE</div>
-        </div>
-        <div class="video-card">
-          <video controls preload="metadata" muted>
-            <source src="videos/dynamic_obs_front_nomad_care.MOV" type="video/mp4" />
-          </video>
-          <div class="label">NoMaD + CARE</div>
-        </div>
-      </div>
-    </div>
+  <!-- Static Table -->
+  <h3 class="section-subtitle">Navigation with Static Obstacles</h3>
+  <p class="table-note">Comparison of navigation performance across three robot platforms and two indoor environments (10 trials each). Metrics: goal arrival rate (%), collisions per run, distance (m), and time (s).</p>
+  <div class="table-scroll">
+    <table class="tbl-sm">
+      <thead>
+        <tr><th rowspan="2" style="text-align:left;">Robot &amp; Model</th><th colspan="4" class="env-head">Environment TE</th><th colspan="4" class="env-head">Environment CY</th></tr>
+        <tr><th>Goal% ↑</th><th>#Coll. ↓</th><th>Dist. (m)</th><th>Time (s)</th><th>Goal% ↑</th><th>#Coll. ↓</th><th>Dist. (m)</th><th>Time (s)</th></tr>
+      </thead>
+      <tbody>
+        <tr class="row-robot"><td colspan="9">RoboMaster</td></tr>
+        <tr class="row-ours"><td>SAFER-Nav (Ours)</td><td class="best">0.9</td><td class="best">0</td><td>14.87 ± 0.49</td><td>77.91 ± 7.26</td><td class="best">0.9</td><td class="best">0.22</td><td>24.98 ± 0.44</td><td>130.84 ± 5.67</td></tr>
+        <tr><td>ViNT</td><td>0.6</td><td>3.17</td><td>14.59 ± 0.67</td><td>79.99 ± 6.95</td><td>0.4</td><td>0.75</td><td>26.20 ± 0.65</td><td>128.63 ± 3.12</td></tr>
+        <tr><td>NoMaD</td><td>0.3</td><td>3.67</td><td>16.38 ± 0.20</td><td>87.50 ± 5.72</td><td>0.5</td><td>3.4</td><td>25.48 ± 0.78</td><td>122.27 ± 3.70</td></tr>
+        <tr><td>ViNT + CARE</td><td>0.5</td><td>1.4</td><td>15.17 ± 0.62</td><td>82.98 ± 4.22</td><td>0.1</td><td>1</td><td>26.35</td><td>138.25</td></tr>
+        <tr><td>NoMaD + CARE</td><td>0.2</td><td>4</td><td>17.07 ± 1.09</td><td>91.75 ± 3.18</td><td>0.1</td><td>2</td><td>25.97</td><td>131.19</td></tr>
 
-  </section>
+        <tr class="row-robot"><td colspan="9">TurtleBot4</td></tr>
+        <tr class="row-ours"><td>SAFER-Nav (Ours)</td><td class="best">0.9</td><td class="best">0.24</td><td>14.41 ± 1.09</td><td>87.65 ± 7.74</td><td class="best">0.9</td><td class="best">0.22</td><td>25.26 ± 0.74</td><td>137.51 ± 3.09</td></tr>
+        <tr><td>ViNT</td><td>0.3</td><td>3</td><td>15.21 ± 0.52</td><td>84.03 ± 2.28</td><td>0.4</td><td>1</td><td>26.12 ± 0.73</td><td>141.89 ± 6.90</td></tr>
+        <tr><td>NoMaD</td><td>0.1</td><td>7</td><td>23.42</td><td>120.50</td><td>0.2</td><td>4.5</td><td>26.33 ± 0.15</td><td>125.73 ± 5.49</td></tr>
+        <tr><td>ViNT + CARE</td><td>0.4</td><td>3.25</td><td>14.35 ± 0.28</td><td>85.75 ± 4.60</td><td>0.3</td><td>3.33</td><td>26.84 ± 0.28</td><td>134.37 ± 3.16</td></tr>
+        <tr><td>NoMaD + CARE</td><td>0.2</td><td>4.5</td><td>17.28 ± 2.31</td><td>107.75 ± 7.07</td><td>0.2</td><td>1.5</td><td>26.08 ± 0.17</td><td>147.95 ± 6.16</td></tr>
 
-  <!-- ====== STATIC OBSTACLE TABLE ====== -->
-  <section>
-    <h2>Static Obstacle Navigation Results</h2>
-    <p class="table-caption">Comparison of navigation performance between baseline vision-based models and SAFER-Nav across three robot platforms and two different indoor environments. Metrics include goal arrival rate (%), collision counts per run, traveled distance (m), and completion time (s).</p>
-    <div class="table-wrap">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th rowspan="2" style="text-align:left;">Robot &amp; Model</th>
-            <th colspan="4" class="env-header">Environment TE</th>
-            <th colspan="4" class="env-header">Environment CY</th>
-          </tr>
-          <tr>
-            <th>Goal% ↑</th>
-            <th>#Coll. ↓</th>
-            <th>Dist. (m)</th>
-            <th>Time (s)</th>
-            <th>Goal% ↑</th>
-            <th>#Coll. ↓</th>
-            <th>Dist. (m)</th>
-            <th>Time (s)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- RoboMaster -->
-          <tr class="robot-header"><td colspan="9">RoboMaster</td></tr>
-          <tr class="highlight-row">
-            <td>SAFER-Nav (Ours)</td>
-            <td class="best">0.95</td><td class="best">0</td><td>14.92 ± 0.60</td><td>77.31 ± 6.38</td>
-            <td class="best">0.9</td><td class="best">0.11</td><td>25.07 ± 0.49</td><td>129.77 ± 4.36</td>
-          </tr>
-          <tr>
-            <td>ViNT</td>
-            <td>0.6</td><td>3.17</td><td>14.59 ± 0.67</td><td>79.99 ± 6.95</td>
-            <td>0.4</td><td>0.75</td><td>26.20 ± 0.65</td><td>128.63 ± 3.12</td>
-          </tr>
-          <tr>
-            <td>NoMaD</td>
-            <td>0.3</td><td>3.67</td><td>16.38 ± 0.20</td><td>87.50 ± 5.72</td>
-            <td>0.5</td><td>3.4</td><td>25.48 ± 0.78</td><td>122.27 ± 3.70</td>
-          </tr>
-          <tr>
-            <td>ViNT + CARE</td>
-            <td>0.5</td><td>1.4</td><td>15.17 ± 0.62</td><td>82.98 ± 4.22</td>
-            <td>0.1</td><td>1</td><td>26.35</td><td>138.25</td>
-          </tr>
-          <tr>
-            <td>NoMaD + CARE</td>
-            <td>0.2</td><td>4</td><td>17.07 ± 1.09</td><td>91.75 ± 3.18</td>
-            <td>0.1</td><td>2</td><td>25.97</td><td>131.19</td>
-          </tr>
+        <tr class="row-robot"><td colspan="9">LoCoBot</td></tr>
+        <tr class="row-ours"><td>SAFER-Nav (Ours)</td><td class="best">1.0</td><td class="best">0.4</td><td>14.97 ± 0.34</td><td>85.13 ± 4.33</td><td class="best">1.0</td><td class="best">0.1</td><td>25.75 ± 0.91</td><td>134.63 ± 2.42</td></tr>
+        <tr><td>ViNT</td><td>0.2</td><td>2.5</td><td>17.18 ± 0.21</td><td>82.19 ± 2.74</td><td>0.6</td><td>0.17</td><td>25.88 ± 0.82</td><td>126.31 ± 6.09</td></tr>
+        <tr><td>NoMaD</td><td>0.2</td><td>2.5</td><td>18.78 ± 0.22</td><td>102.34 ± 1.23</td><td>0.4</td><td>4.75</td><td>26.14 ± 0.27</td><td>129.94 ± 5.83</td></tr>
+        <tr><td>ViNT + CARE</td><td>0</td><td>N/A</td><td>N/A</td><td>N/A</td><td>0.4</td><td>1.25</td><td>25.29 ± 0.14</td><td>142.72 ± 4.70</td></tr>
+        <tr><td>NoMaD + CARE</td><td>0</td><td>N/A</td><td>N/A</td><td>N/A</td><td>0.3</td><td>3</td><td>25.92 ± 0.49</td><td>152.59 ± 2.18</td></tr>
+      </tbody>
+    </table>
+  </div>
 
-          <!-- TurtleBot4 -->
-          <tr class="robot-header"><td colspan="9">TurtleBot4</td></tr>
-          <tr class="highlight-row">
-            <td>SAFER-Nav (Ours)</td>
-            <td class="best">0.85</td><td class="best">0.35</td><td>14.31 ± 0.95</td><td>85.83 ± 7.31</td>
-            <td class="best">0.9</td><td class="best">0.22</td><td>25.20 ± 0.80</td><td>137.54 ± 5.31</td>
-          </tr>
-          <tr>
-            <td>ViNT</td>
-            <td>0.3</td><td>3</td><td>15.21 ± 0.52</td><td>84.03 ± 2.28</td>
-            <td>0.4</td><td>1</td><td>26.12 ± 0.73</td><td>141.89 ± 6.90</td>
-          </tr>
-          <tr>
-            <td>NoMaD</td>
-            <td>0.1</td><td>7</td><td>23.42</td><td>120.50</td>
-            <td>0.2</td><td>4.5</td><td>26.33 ± 0.15</td><td>125.73 ± 5.49</td>
-          </tr>
-          <tr>
-            <td>ViNT + CARE</td>
-            <td>0.4</td><td>3.25</td><td>14.35 ± 0.28</td><td>85.75 ± 4.60</td>
-            <td>0.3</td><td>3.33</td><td>26.84 ± 0.28</td><td>134.37 ± 3.16</td>
-          </tr>
-          <tr>
-            <td>NoMaD + CARE</td>
-            <td>0.2</td><td>4.5</td><td>17.28 ± 2.31</td><td>107.75 ± 7.07</td>
-            <td>0.2</td><td>1.5</td><td>26.08 ± 0.17</td><td>147.95 ± 6.16</td>
-          </tr>
+  <!-- Scatter Plot -->
+  <h3 class="section-subtitle">Goal Arrival vs. Collision Count</h3>
+  <p class="table-note">Methods closer to the top-left corner indicate better overall performance (high goal arrival, low collisions).</p>
+  <div class="scatter-wrap"><canvas id="scatterChart"></canvas></div>
+  <div class="scatter-legend" id="scatterLegend"></div>
 
-          <!-- LoCoBot -->
-          <tr class="robot-header"><td colspan="9">LoCoBot</td></tr>
-          <tr class="highlight-row">
-            <td>SAFER-Nav (Ours)</td>
-            <td class="best">0.95</td><td class="best">0.26</td><td>14.92 ± 0.27</td><td>86.08 ± 3.35</td>
-            <td class="best">0.95</td><td class="best">0.11</td><td>25.28 ± 0.87</td><td>133.13 ± 3.26</td>
-          </tr>
-          <tr>
-            <td>ViNT</td>
-            <td>0.2</td><td>2.5</td><td>17.18 ± 0.21</td><td>82.19 ± 2.74</td>
-            <td>0.6</td><td>0.17</td><td>25.88 ± 0.82</td><td>126.31 ± 6.09</td>
-          </tr>
-          <tr>
-            <td>NoMaD</td>
-            <td>0.2</td><td>2.5</td><td>18.78 ± 0.22</td><td>102.34 ± 1.23</td>
-            <td>0.4</td><td>4.75</td><td>26.14 ± 0.27</td><td>129.94 ± 5.83</td>
-          </tr>
-          <tr>
-            <td>ViNT + CARE</td>
-            <td>0</td><td>N/A</td><td>N/A</td><td>N/A</td>
-            <td>0.4</td><td>1.25</td><td>25.29 ± 0.14</td><td>142.72 ± 4.70</td>
-          </tr>
-          <tr>
-            <td>NoMaD + CARE</td>
-            <td>0</td><td>N/A</td><td>N/A</td><td>N/A</td>
-            <td>0.3</td><td>3</td><td>25.92 ± 0.49</td><td>152.59 ± 2.18</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
+  <!-- Dynamic Table -->
+  <h3 class="section-subtitle">Navigation with Dynamic Obstacles</h3>
+  <p class="table-note">Number of trials with collisions (out of 10) per dynamic obstacle scenario. The dynamic obstacle is a teleoperated TurtleBot4.</p>
+  <div class="table-scroll" style="max-width: 600px;">
+    <table>
+      <thead><tr><th style="text-align:left;">Model</th><th>(i) Corner-Appear</th><th>(ii) Front-Approach</th></tr></thead>
+      <tbody>
+        <tr class="row-ours"><td>SAFER-Nav (Ours)</td><td class="best">0/10</td><td class="best">0/10</td></tr>
+        <tr><td>ViNT</td><td>5/10</td><td>9/10</td></tr>
+        <tr><td>NoMaD</td><td>6/10</td><td>8/10</td></tr>
+        <tr><td>ViNT + CARE</td><td>3/10</td><td>2/10</td></tr>
+        <tr><td>NoMaD + CARE</td><td>2/10</td><td>2/10</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 
-  <!-- ====== SCATTER PLOT ====== -->
-  <section>
-    <h2>Goal Arrival vs. Collision (Static Obstacle)</h2>
-    <p class="table-caption">Each marker represents one method. The x-axis denotes average collision counts per run and the y-axis denotes goal arrival rate (%). Methods closer to the top-left corner indicate better overall performance.</p>
-    <div class="scatter-container">
-      <canvas id="scatterChart"></canvas>
-    </div>
-    <div class="scatter-legend" id="scatterLegend"></div>
-  </section>
+<div class="divider"><hr></div>
 
-  <!-- ====== DYNAMIC OBSTACLE TABLE ====== -->
-  <section class="narrow">
-    <h2>Dynamic Obstacle Navigation Results</h2>
-    <p class="table-caption">Number of trials where collisions occur (out of 10 trials) for each dynamic obstacle scenario. The dynamic obstacle is a teleoperated TurtleBot4 mobile robot.</p>
-    <div class="table-wrap">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th style="text-align:left;">Model</th>
-            <th>(i) Corner-Appear</th>
-            <th>(ii) Front-Approach</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="highlight-row">
-            <td>SAFER-Nav (Ours)</td>
-            <td class="best">0/10</td>
-            <td class="best">0/10</td>
-          </tr>
-          <tr>
-            <td>ViNT</td>
-            <td>5/10</td>
-            <td>9/10</td>
-          </tr>
-          <tr>
-            <td>NoMaD</td>
-            <td>6/10</td>
-            <td>8/10</td>
-          </tr>
-          <tr>
-            <td>ViNT + CARE</td>
-            <td>3/10</td>
-            <td>2/10</td>
-          </tr>
-          <tr>
-            <td>NoMaD + CARE</td>
-            <td>2/10</td>
-            <td>2/10</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
+<!-- ═══════════ ABLATION ═══════════ -->
+<div class="section">
+  <h2 class="section-title">Ablation &amp; Analysis</h2>
 
-  <footer>
-    <p>Anonymous Submission — Under Double-Blind Review</p>
-  </footer>
+  <h3 class="section-subtitle">Training Curves</h3>
+  <p class="section-text">Learning curves for seven segmentation-to-action configurations. C3 (post-transformer bridge + auxiliary branch) achieves the lowest action and distance losses.</p>
+  <div class="fig-wrap">
+    <img src="assets/SAFER_Nav_figure5.png" alt="Learning Curves" />
+    <p class="fig-cap"><strong>Figure 5.</strong> Learning curves over 30 training epochs for configurations C1–C7. The shaded region marks epochs 21–30 used for summary statistics. Lower is better for both losses.</p>
+  </div>
 
-  <!-- Scatter Plot Script -->
-  <script>
-  (function() {
-    const datasets = [
-      { title: 'RoboMaster (TE)', data: { 'SAFER-Nav': [0, 95], 'ViNT': [3.17, 60], 'NoMaD': [3.67, 30], 'ViNT+CARE': [1.4, 50], 'NoMaD+CARE': [4.0, 20] }},
-      { title: 'TurtleBot4 (TE)', data: { 'SAFER-Nav': [0.35, 85], 'ViNT': [3.0, 30], 'NoMaD': [7.0, 10], 'ViNT+CARE': [3.25, 40], 'NoMaD+CARE': [4.5, 20] }},
-      { title: 'LoCoBot (TE)', data: { 'SAFER-Nav': [0.26, 95], 'ViNT': [2.3, 21], 'NoMaD': [2.7, 19] }},
-      { title: 'RoboMaster (CY)', data: { 'SAFER-Nav': [0.11, 90], 'ViNT': [0.75, 40], 'NoMaD': [3.4, 50], 'ViNT+CARE': [1.0, 10], 'NoMaD+CARE': [2.0, 10] }},
-      { title: 'TurtleBot4 (CY)', data: { 'SAFER-Nav': [0.22, 90], 'ViNT': [1.0, 40], 'NoMaD': [4.5, 20], 'ViNT+CARE': [3.33, 30], 'NoMaD+CARE': [1.5, 20] }},
-      { title: 'LoCoBot (CY)', data: { 'SAFER-Nav': [0.11, 95], 'ViNT': [0.17, 60], 'NoMaD': [4.75, 40], 'ViNT+CARE': [1.25, 40], 'NoMaD+CARE': [3.0, 30] }}
-    ];
+  <h3 class="section-subtitle">Robustness to Segmentation Backbone</h3>
+  <p class="section-text">SAFER-Nav accommodates different segmentation backbones (OneFormer, SegFormer, Mask2Former) without retraining, achieving similar goal-reaching performance across all three.</p>
+  <div class="fig-wrap">
+    <img src="assets/SAFER_Nav_figure6.png" alt="Segmentation Backbone Comparison" />
+    <p class="fig-cap"><strong>Figure 6.</strong> Online traversability predictions from three segmentation backbones on identical frames from TE and CY, showing differences at object boundaries and around floor reflections.</p>
+  </div>
+</div>
 
-    const methods = [
-      { name: 'SAFER-Nav', color: '#2563eb', shape: 'circle' },
-      { name: 'ViNT', color: '#dc2626', shape: 'square' },
-      { name: 'NoMaD', color: '#ea580c', shape: 'triangle' },
-      { name: 'ViNT+CARE', color: '#0d9488', shape: 'diamond' },
-      { name: 'NoMaD+CARE', color: '#7c3aed', shape: 'pentagon' }
-    ];
+<div class="divider"><hr></div>
 
-    const canvas = document.getElementById('scatterChart');
-    const ctx = canvas.getContext('2d');
-    const dpr = window.devicePixelRatio || 1;
+<!-- ═══════════ BIBTEX ═══════════ -->
+<div class="section">
+  <h2 class="section-title">BibTeX</h2>
+  <div class="bib-box">@article{anonymous2027safernav,
+  title     = {SAFER-Nav: Enhancing Safety for Visual Robot Navigation via Segmentation-Aware Fine-Tuning},
+  author    = {Anonymous},
+  journal   = {Under review at ICRA 2027},
+  year      = {2027}
+}</div>
+</div>
 
-    const cols = 3, rows = 2;
-    const cellW = 280, cellH = 220;
-    const padL = 55, padR = 20, padT = 30, padB = 50;
-    const gapX = 30, gapY = 40;
-    const totalW = cols * cellW + (cols - 1) * gapX + 40;
-    const totalH = rows * cellH + (rows - 1) * gapY + 60;
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer>
+  <p>Anonymous Submission — Under Double-Blind Review</p>
+  <p style="margin-top:0.4rem;">This page design was adapted from <a href="https://nerfies.github.io" style="color:var(--c-accent);">Nerfies</a>.</p>
+</footer>
 
-    canvas.width = totalW * dpr;
-    canvas.height = totalH * dpr;
-    canvas.style.width = totalW + 'px';
-    canvas.style.height = totalH + 'px';
-    ctx.scale(dpr, dpr);
+<!-- ═══════════ SCATTER PLOT SCRIPT ═══════════ -->
+<script>
+(function() {
+  const datasets = [
+    { title: 'RoboMaster (TE)', data: { 'SAFER-Nav': [0, 90], 'ViNT': [3.17, 60], 'NoMaD': [3.67, 30], 'ViNT+CARE': [1.4, 50], 'NoMaD+CARE': [4.0, 20] }},
+    { title: 'TurtleBot4 (TE)', data: { 'SAFER-Nav': [0.24, 90], 'ViNT': [3.0, 30], 'NoMaD': [7.0, 10], 'ViNT+CARE': [3.25, 40], 'NoMaD+CARE': [4.5, 20] }},
+    { title: 'LoCoBot (TE)', data: { 'SAFER-Nav': [0.4, 100], 'ViNT': [2.5, 20], 'NoMaD': [2.5, 20] }},
+    { title: 'RoboMaster (CY)', data: { 'SAFER-Nav': [0.22, 90], 'ViNT': [0.75, 40], 'NoMaD': [3.4, 50], 'ViNT+CARE': [1.0, 10], 'NoMaD+CARE': [2.0, 10] }},
+    { title: 'TurtleBot4 (CY)', data: { 'SAFER-Nav': [0.22, 90], 'ViNT': [1.0, 40], 'NoMaD': [4.5, 20], 'ViNT+CARE': [3.33, 30], 'NoMaD+CARE': [1.5, 20] }},
+    { title: 'LoCoBot (CY)', data: { 'SAFER-Nav': [0.1, 100], 'ViNT': [0.17, 60], 'NoMaD': [4.75, 40], 'ViNT+CARE': [1.25, 40], 'NoMaD+CARE': [3.0, 30] }}
+  ];
+  const methods = [
+    { name: 'SAFER-Nav', color: '#2563eb', shape: 'circle' },
+    { name: 'ViNT', color: '#dc2626', shape: 'square' },
+    { name: 'NoMaD', color: '#ea580c', shape: 'triangle' },
+    { name: 'ViNT+CARE', color: '#0d9488', shape: 'diamond' },
+    { name: 'NoMaD+CARE', color: '#7c3aed', shape: 'pentagon' }
+  ];
+  const canvas = document.getElementById('scatterChart');
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const cols = 3, rows = 2, cellW = 280, cellH = 220, padL = 55, padR = 20, padT = 30, padB = 50, gapX = 30, gapY = 40;
+  const totalW = cols * cellW + (cols - 1) * gapX + 40;
+  const totalH = rows * cellH + (rows - 1) * gapY + 60;
+  canvas.width = totalW * dpr; canvas.height = totalH * dpr;
+  canvas.style.width = totalW + 'px'; canvas.style.height = totalH + 'px';
+  ctx.scale(dpr, dpr);
 
-    function drawShape(cx, cy, shape, color, size) {
-      ctx.fillStyle = color;
-      ctx.strokeStyle = '#fff';
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      if (shape === 'circle') {
-        ctx.arc(cx, cy, size, 0, Math.PI * 2);
-      } else if (shape === 'square') {
-        ctx.rect(cx - size, cy - size, size * 2, size * 2);
-      } else if (shape === 'triangle') {
-        ctx.moveTo(cx, cy - size);
-        ctx.lineTo(cx - size, cy + size);
-        ctx.lineTo(cx + size, cy + size);
-        ctx.closePath();
-      } else if (shape === 'diamond') {
-        ctx.moveTo(cx, cy - size * 1.2);
-        ctx.lineTo(cx + size, cy);
-        ctx.lineTo(cx, cy + size * 1.2);
-        ctx.lineTo(cx - size, cy);
-        ctx.closePath();
-      } else if (shape === 'pentagon') {
-        for (let i = 0; i < 5; i++) {
-          const a = (i * 2 * Math.PI / 5) - Math.PI / 2;
-          const px = cx + size * Math.cos(a);
-          const py = cy + size * Math.sin(a);
-          i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
-        }
-        ctx.closePath();
-      }
-      ctx.fill();
-      ctx.stroke();
-    }
+  function drawShape(cx, cy, shape, color, size) {
+    ctx.fillStyle = color; ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.beginPath();
+    if (shape === 'circle') { ctx.arc(cx, cy, size, 0, Math.PI * 2); }
+    else if (shape === 'square') { ctx.rect(cx - size, cy - size, size * 2, size * 2); }
+    else if (shape === 'triangle') { ctx.moveTo(cx, cy - size); ctx.lineTo(cx - size, cy + size); ctx.lineTo(cx + size, cy + size); ctx.closePath(); }
+    else if (shape === 'diamond') { ctx.moveTo(cx, cy - size * 1.2); ctx.lineTo(cx + size, cy); ctx.lineTo(cx, cy + size * 1.2); ctx.lineTo(cx - size, cy); ctx.closePath(); }
+    else if (shape === 'pentagon') { for (let i = 0; i < 5; i++) { const a = (i * 2 * Math.PI / 5) - Math.PI / 2; const px = cx + size * Math.cos(a); const py = cy + size * Math.sin(a); i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py); } ctx.closePath(); }
+    ctx.fill(); ctx.stroke();
+  }
 
-    datasets.forEach((ds, idx) => {
-      const col = idx % cols, row = Math.floor(idx / cols);
-      const ox = 20 + col * (cellW + gapX);
-      const oy = 10 + row * (cellH + gapY);
-      const plotL = ox + padL, plotR = ox + cellW - padR;
-      const plotT = oy + padT, plotB = oy + cellH - padB;
-      const pw = plotR - plotL, ph = plotB - plotT;
+  datasets.forEach((ds, idx) => {
+    const col = idx % cols, row = Math.floor(idx / cols);
+    const ox = 20 + col * (cellW + gapX), oy = 10 + row * (cellH + gapY);
+    const plotL = ox + padL, plotR = ox + cellW - padR, plotT = oy + padT, plotB = oy + cellH - padB;
+    const pw = plotR - plotL, ph = plotB - plotT;
+    ctx.fillStyle = '#1a1a2e'; ctx.font = '600 13px Noto Sans, sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(ds.title, ox + cellW / 2, oy + 18);
+    ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
+    for (let y = 0; y <= 100; y += 20) { const py = plotB - (y / 100) * ph; ctx.beginPath(); ctx.moveTo(plotL, py); ctx.lineTo(plotR, py); ctx.stroke(); ctx.fillStyle = '#8892a0'; ctx.font = '11px Noto Sans'; ctx.textAlign = 'right'; ctx.fillText(y, plotL - 6, py + 4); }
+    for (let x = 0; x <= 8; x += 2) { const px = plotL + (x / 8.2) * pw; ctx.beginPath(); ctx.moveTo(px, plotT); ctx.lineTo(px, plotB); ctx.stroke(); ctx.fillStyle = '#8892a0'; ctx.font = '11px Noto Sans'; ctx.textAlign = 'center'; ctx.fillText(x, px, plotB + 14); }
+    ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 1.5; ctx.strokeRect(plotL, plotT, pw, ph);
+    ctx.fillStyle = '#8892a0'; ctx.font = '11px Noto Sans'; ctx.textAlign = 'center';
+    ctx.fillText('Avg. collisions/run', ox + cellW / 2, plotB + 32);
+    ctx.save(); ctx.translate(ox + 12, oy + cellH / 2); ctx.rotate(-Math.PI / 2); ctx.fillText('Goal arrival (%)', 0, 0); ctx.restore();
+    for (const m of methods) { const pt = ds.data[m.name]; if (!pt) continue; const px = plotL + (pt[0] / 8.2) * pw; const py = plotB - (pt[1] / 100) * ph; drawShape(px, py, m.shape, m.color, 6); }
+  });
 
-      // Title
-      ctx.fillStyle = '#1a1a1a';
-      ctx.font = '600 13px Noto Sans, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(ds.title, ox + cellW / 2, oy + 18);
-
-      // Grid & axes
-      ctx.strokeStyle = '#e5e7eb';
-      ctx.lineWidth = 1;
-      for (let y = 0; y <= 100; y += 20) {
-        const py = plotB - (y / 100) * ph;
-        ctx.beginPath(); ctx.moveTo(plotL, py); ctx.lineTo(plotR, py); ctx.stroke();
-        ctx.fillStyle = '#9ca3af'; ctx.font = '11px Noto Sans'; ctx.textAlign = 'right';
-        ctx.fillText(y, plotL - 6, py + 4);
-      }
-      for (let x = 0; x <= 8; x += 2) {
-        const px = plotL + (x / 8.2) * pw;
-        ctx.beginPath(); ctx.moveTo(px, plotT); ctx.lineTo(px, plotB); ctx.stroke();
-        ctx.fillStyle = '#9ca3af'; ctx.font = '11px Noto Sans'; ctx.textAlign = 'center';
-        ctx.fillText(x, px, plotB + 14);
-      }
-
-      // Axis border
-      ctx.strokeStyle = '#d1d5db'; ctx.lineWidth = 1.5;
-      ctx.strokeRect(plotL, plotT, pw, ph);
-
-      // Labels
-      ctx.fillStyle = '#6b7280'; ctx.font = '11px Noto Sans'; ctx.textAlign = 'center';
-      ctx.fillText('Avg. collisions/run', ox + cellW / 2, plotB + 32);
-      ctx.save();
-      ctx.translate(ox + 12, oy + cellH / 2);
-      ctx.rotate(-Math.PI / 2);
-      ctx.fillText('Goal arrival (%)', 0, 0);
-      ctx.restore();
-
-      // Data points
-      for (const m of methods) {
-        const pt = ds.data[m.name];
-        if (!pt) continue;
-        const px = plotL + (pt[0] / 8.2) * pw;
-        const py = plotB - (pt[1] / 100) * ph;
-        drawShape(px, py, m.shape, m.color, 6);
-      }
-    });
-
-    // Legend
-    const leg = document.getElementById('scatterLegend');
-    methods.forEach(m => {
-      const item = document.createElement('span');
-      item.className = 'legend-item';
-      const dot = document.createElement('span');
-      dot.className = 'legend-dot';
-      dot.style.background = m.color;
-      item.appendChild(dot);
-      item.appendChild(document.createTextNode(m.name));
-      leg.appendChild(item);
-    });
-  })();
-  </script>
+  const leg = document.getElementById('scatterLegend');
+  methods.forEach(m => { const item = document.createElement('span'); item.className = 'legend-item'; const dot = document.createElement('span'); dot.className = 'legend-dot'; dot.style.background = m.color; item.appendChild(dot); item.appendChild(document.createTextNode(m.name)); leg.appendChild(item); });
+})();
+</script>
 
 </body>
 </html>
